@@ -5,7 +5,8 @@
     <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
-<div th:insert="~{header :: headerFragment}"></div>
+<div th:insert="~{header :: headerFragment}" th:with="studentId=${param.studentId}"></div>
+
     
 <main>
 
@@ -17,7 +18,8 @@
     <p>Address: <span th:text="${student.address}"></span></p>
     <p>City: <span th:text="${student.city}"></span></p>
     <p>Postal Code: <span th:text="${student.postalCode}"></span></p>
-    <a href="/editProfile">Edit Profile</a>
+    <a th:href="@{/editProfile(studentId=${student.studentId})}">Edit Profile</a>
+
     </main>
 <div th:insert="~{footer :: footerFragment}"></div>
 </body>

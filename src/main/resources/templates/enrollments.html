@@ -5,7 +5,8 @@
     <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
- <div th:insert="~{header :: headerFragment}"></div>
+<div th:insert="~{header :: headerFragment}" th:with="studentId=${param.studentId}"></div>
+
 
 <main>
     <h1>All Enrollments</h1>

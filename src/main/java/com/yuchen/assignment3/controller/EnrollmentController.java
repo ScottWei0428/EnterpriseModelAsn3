@@ -12,8 +12,8 @@ import com.yuchen.assignment3.entity.Program;
 import com.yuchen.assignment3.entity.Student;
 import com.yuchen.assignment3.repository.EnrollmentRepository;
 import com.yuchen.assignment3.repository.ProgramRepository;
+import com.yuchen.assignment3.repository.StudentRepository;
 
-import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,27 +26,32 @@ public class EnrollmentController {
 
     @Autowired
     private ProgramRepository programRepository;
+    
+    @Autowired
+    private StudentRepository studentRepository;
 
     @GetMapping("/enrollments")
-    public String showEnrollments(Model model, HttpSession session) {
-        Student loggedInStudent = (Student) session.getAttribute("loggedInStudent");
-        if (loggedInStudent == null) {
+    public String showEnrollments(@RequestParam("studentId") String studentId, Model model) {
+    	Student student = studentRepository.findByStudentId(studentId);
+        if (student == null) {
             return "redirect:/login";
         }
 
-        List<Enrollment> studentEnrollments = enrollmentRepository.findByStudentId(loggedInStudent.getStudentId());
+        List<Enrollment> studentEnrollments = enrollmentRepository.findByStudentId(student.getStudentId());
         model.addAttribute("enrollments", studentEnrollments);
+        model.addAttribute("studentId", student.getStudentId()); 
         return "enrollments";
     }
 
+
     @GetMapping("/checkout")
     public String checkout(
+            @RequestParam("studentId") String studentId,
             @RequestParam("programCode") String programCode,
-            Model model,
-            HttpSession session) {
+            Model model) {
 
-        Student loggedInStudent = (Student) session.getAttribute("loggedInStudent");
-        if (loggedInStudent == null) {
+    	Student student = studentRepository.findByStudentId(studentId);
+        if (student == null) {
             return "redirect:/login";
         }
 
@@ -57,7 +62,7 @@ public class EnrollmentController {
 
         String[] startDates = program.getStartDates().split(",");
 
-        model.addAttribute("studentId", loggedInStudent.getStudentId());
+        model.addAttribute("studentId", student.getStudentId());
         model.addAttribute("programCode", program.getProgramCode());
         model.addAttribute("programName", program.getProgramName());
         model.addAttribute("duration", program.getDuration());
@@ -67,24 +72,25 @@ public class EnrollmentController {
         return "checkout";
     }
 
+
     @PostMapping("/processPayment")
     public String processPayment(
+            @RequestParam("studentId") String studentId,
             @RequestParam("programCode") String programCode,
             @RequestParam("startDate") String startDate,
             @RequestParam("fee") double fee,
             @RequestParam("cardNumber") String cardNumber,
             @RequestParam("cvv") String cvv,
-            HttpSession session,
             Model model) {
 
-        Student loggedInStudent = (Student) session.getAttribute("loggedInStudent");
-        if (loggedInStudent == null) {
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
             return "redirect:/login";
         }
 
         Enrollment enrollment = new Enrollment();
         enrollment.setApplicationNo(UUID.randomUUID().toString().substring(0, 8));
-        enrollment.setStudentId(loggedInStudent.getStudentId());
+        enrollment.setStudentId(student.getStudentId());
         enrollment.setProgramCode(programCode);
         enrollment.setStartDate(startDate);
         enrollment.setAmountPaid(fee);
@@ -93,7 +99,10 @@ public class EnrollmentController {
         enrollmentRepository.save(enrollment);
 
         model.addAttribute("enrollment", enrollment);
+        model.addAttribute("studentId", studentId); 
 
         return "enrollmentConfirmation";
     }
+
+
 }

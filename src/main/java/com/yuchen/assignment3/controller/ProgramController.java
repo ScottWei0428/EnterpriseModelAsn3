@@ -1,5 +1,6 @@
 package com.yuchen.assignment3.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,14 +18,16 @@ public class ProgramController {
     private ProgramRepository programRepository;
 
     @GetMapping("/programs")
-    public String showPrograms(Model model) {
+    public String showPrograms(@RequestParam("studentId") String studentId, Model model) {
+        model.addAttribute("studentId", studentId);
         model.addAttribute("programList", programRepository.findAll());
         return "programs";
     }
 
     @GetMapping("/studentPrograms")
-    public String showStudentPrograms(Model model) {
-        model.addAttribute("programs", programRepository.findAll());
+    public String showStudentPrograms(@RequestParam(required = false) String studentId, Model model) {
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("programList", programRepository.findAll());
         return "studentPrograms";
     }
 
@@ -34,7 +37,12 @@ public class ProgramController {
             @RequestParam("programName") String programName,
             @RequestParam("duration") String duration,
             @RequestParam("fee") double fee,
-            @RequestParam("startDates") String startDates) {
+            @RequestParam("startDates") String startDates,
+            @RequestParam("studentId") String studentId) {
+
+        if (programRepository.existsById(programCode)) {
+            return "redirect:/programs?studentId=" + studentId + "&error=ProgramCodeExists";
+        }
 
         Program program = new Program();
         program.setProgramCode(programCode);
@@ -42,21 +50,30 @@ public class ProgramController {
         program.setDuration(duration);
         program.setFee(fee);
         program.setStartDates(startDates);
-
         programRepository.save(program);
-        return "redirect:/programs";
+
+        return "redirect:/programs?studentId=" + studentId;
     }
 
     @GetMapping("/deleteProgram")
-    public String deleteProgram(@RequestParam("programCode") String programCode) {
+    public String deleteProgram(@RequestParam("programCode") String programCode, @RequestParam("studentId") String studentId) {
+        if (!programRepository.existsById(programCode)) {
+            return "redirect:/programs?studentId=" + studentId + "&error=ProgramNotFound";
+        }
+
         programRepository.deleteById(programCode);
-        return "redirect:/programs";
+        return "redirect:/programs?studentId=" + studentId;
     }
 
     @GetMapping("/editProgram")
-    public String editProgram(@RequestParam("programCode") String programCode, Model model) {
+    public String editProgram(@RequestParam("programCode") String programCode, @RequestParam("studentId") String studentId, Model model) {
         Program program = programRepository.findById(programCode).orElse(null);
+        if (program == null) {
+            return "redirect:/programs?studentId=" + studentId + "&error=ProgramNotFound";
+        }
+
         model.addAttribute("program", program);
+        model.addAttribute("studentId", studentId);
         return "editProgram";
     }
 
@@ -66,18 +83,20 @@ public class ProgramController {
             @RequestParam("programName") String programName,
             @RequestParam("duration") String duration,
             @RequestParam("fee") double fee,
-            @RequestParam("startDates") String startDates) {
+            @RequestParam("startDates") String startDates,
+            @RequestParam("studentId") String studentId) {
 
         Program program = programRepository.findById(programCode).orElse(null);
-        if (program != null) {
-            program.setProgramName(programName);
-            program.setDuration(duration);
-            program.setFee(fee);
-            program.setStartDates(startDates);
-
-            programRepository.save(program);
+        if (program == null) {
+            return "redirect:/programs?studentId=" + studentId + "&error=ProgramNotFound";
         }
 
-        return "redirect:/programs";
+        program.setProgramName(programName);
+        program.setDuration(duration);
+        program.setFee(fee);
+        program.setStartDates(startDates);
+        programRepository.save(program);
+
+        return "redirect:/programs?studentId=" + studentId;
     }
 }

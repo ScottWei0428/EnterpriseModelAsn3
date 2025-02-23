@@ -14,7 +14,7 @@ public class Enrollment {
     private String applicationNo;
 
     @Column(name = "student_id")
-    private int studentId;
+    private String studentId;
 
     @Column(name = "program_code")
     private String programCode;
@@ -36,12 +36,12 @@ public class Enrollment {
         this.applicationNo = applicationNo;
     }
 
-    public int getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setStudentId(String string) {
+        this.studentId = string;
     }
 
     public String getProgramCode() {

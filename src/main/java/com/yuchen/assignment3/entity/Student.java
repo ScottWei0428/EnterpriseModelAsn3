@@ -11,9 +11,9 @@ public class Student {
 
     @Id
     @Column(name = "student_id")
-    private int studentId;
+    private String studentId;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", unique = true)
     private String userName;
 
     @Column(name = "password")
@@ -27,18 +27,18 @@ public class Student {
 
     @Column(name = "address")
     private String address;
-
+ 
     @Column(name = "city")
     private String city;
 
     @Column(name = "postal_code")
     private String postalCode;
 
-    public int getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
 

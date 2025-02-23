@@ -5,7 +5,8 @@
     <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
-<div th:insert="~{header :: headerFragment}"></div>
+<div th:insert="~{header :: headerFragment}" th:with="studentId=${param.studentId}"></div>
+
     <main>
     <h1>Enrollment Successful!</h1>
 
@@ -17,7 +18,7 @@
     <p><strong>Status:</strong> <span th:text="${enrollment.status}"></span></p>
 
     <br>
-    <a href="/enrollments">View All Enrollments</a>
+    <a th:href="@{/enrollments(studentId=${studentId})}">View My Enrollments</a>
     </main>
 <div th:insert="~{footer :: footerFragment}"></div>
 </body>

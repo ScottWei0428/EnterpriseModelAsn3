@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import jakarta.servlet.http.HttpSession;
 
 import com.yuchen.assignment3.entity.Student;
 import com.yuchen.assignment3.repository.StudentRepository;
@@ -17,8 +16,6 @@ public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
 
-    private Student currentStudent;
-
     @GetMapping("/")
     public String rootRedirect() {
         return "redirect:/login";
@@ -28,18 +25,10 @@ public class StudentController {
     public String showRegisterPage() {
         return "register";
     }
-    
 
-	 @GetMapping("/logout")
-	 public String logout(HttpSession session) {
-	     session.invalidate(); // 清除session
-	     return "redirect:/login";
-	 }
-
- 
     @PostMapping("/register")
     public String registerStudent(
-            @RequestParam("studentId") int studentId,
+            @RequestParam("studentId") String studentId,
             @RequestParam("userName") String userName,
             @RequestParam("password") String password,
             @RequestParam("firstname") String firstname,
@@ -51,21 +40,30 @@ public class StudentController {
 
         if (studentRepository.existsById(studentId)) {
             model.addAttribute("errorMessage", "Student ID already exists!");
-        } else {
-            Student student = new Student();
-            student.setStudentId(studentId);
-            student.setUserName(userName);
-            student.setPassword(password);
-            student.setFirstname(firstname);
-            student.setLastname(lastname);
-            student.setAddress(address);
-            student.setCity(city);
-            student.setPostalCode(postalCode);
-            studentRepository.save(student);
-            model.addAttribute("successMessage", "Registration successful. Please login.");
-            return "login";
+            return "register";
         }
-        return "register";
+
+  
+        if (studentRepository.existsByUserName(userName)) {
+            model.addAttribute("errorMessage", "Username already taken! Please choose another.");
+            return "register";
+        }
+
+
+        Student student = new Student();
+        student.setStudentId(studentId);
+        student.setUserName(userName);
+        student.setPassword(password);
+        student.setFirstname(firstname);
+        student.setLastname(lastname);
+        student.setAddress(address);
+        student.setCity(city);
+        student.setPostalCode(postalCode);
+
+        studentRepository.save(student);
+
+        model.addAttribute("successMessage", "Registration successful! Please login.");
+        return "login";
     }
 
     @GetMapping("/login")
@@ -77,14 +75,12 @@ public class StudentController {
     public String login(
             @RequestParam("userName") String userName,
             @RequestParam("password") String password,
-            HttpSession session,
             Model model) {
 
         Student student = studentRepository.findByUserName(userName);
 
         if (student != null && student.getPassword().equals(password)) {
-            session.setAttribute("loggedInStudent", student); // 存入 session
-            return "redirect:/enrollments";
+            return "redirect:/enrollments?studentId=" + student.getStudentId();
         } else {
             model.addAttribute("loginErrorMessage", "Invalid username or password!");
             return "login";
@@ -92,53 +88,55 @@ public class StudentController {
     }
 
     @GetMapping("/profile")
-    public String showProfile(Model model, HttpSession session) {
-        Student loggedInStudent = (Student) session.getAttribute("loggedInStudent");
-        if (loggedInStudent == null) {
+    public String showProfile(@RequestParam("studentId") String studentId, Model model) {
+        Student student = studentRepository.findByStudentId(studentId);
+        if (student == null) {
             return "redirect:/login";
         }
-
-        model.addAttribute("student", loggedInStudent);
+        model.addAttribute("student", student);
         return "profile";
     }
 
     @GetMapping("/editProfile")
-    public String editProfile(Model model, HttpSession session) {
-        Student loggedInStudent = (Student) session.getAttribute("loggedInStudent");
-        if (loggedInStudent == null) {
+    public String editProfile(@RequestParam("studentId") String studentId, Model model) {
+        Student student = studentRepository.findByStudentId(studentId);
+        if (student == null) {
             return "redirect:/login";
         }
-
-        model.addAttribute("student", loggedInStudent);
+        model.addAttribute("student", student);
         return "editProfile";
     }
 
     @PostMapping("/updateProfile")
     public String updateProfile(
+            @RequestParam("studentId") String studentId,  // studentId 不能是可选的
             @RequestParam("password") String password,
             @RequestParam("firstname") String firstname,
             @RequestParam("lastname") String lastname,
             @RequestParam("address") String address,
             @RequestParam("city") String city,
-            @RequestParam("postalCode") String postalCode,
-            HttpSession session) {
+            @RequestParam("postalCode") String postalCode) {
 
-        Student loggedInStudent = (Student) session.getAttribute("loggedInStudent");
-        if (loggedInStudent == null) {
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
             return "redirect:/login";
         }
 
-        loggedInStudent.setPassword(password);
-        loggedInStudent.setFirstname(firstname);
-        loggedInStudent.setLastname(lastname);
-        loggedInStudent.setAddress(address);
-        loggedInStudent.setCity(city);
-        loggedInStudent.setPostalCode(postalCode);
+        student.setPassword(password);
+        student.setFirstname(firstname);
+        student.setLastname(lastname);
+        student.setAddress(address);
+        student.setCity(city);
+        student.setPostalCode(postalCode);
 
-        studentRepository.save(loggedInStudent);
-        session.setAttribute("loggedInStudent", loggedInStudent);
+        studentRepository.save(student);
 
-        return "redirect:/profile";
+        return "redirect:/profile?studentId=" + studentId;
     }
 
+
+    @GetMapping("/logout")
+    public String logout() {
+        return "redirect:/login";
+    }
 }
