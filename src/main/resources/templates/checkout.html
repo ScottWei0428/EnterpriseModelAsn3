@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout - Payment</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+ <div th:insert="~{header :: headerFragment}"></div>
+<main>
+    <h1>Checkout - Payment</h1>
+
+    <p>Student ID: <span th:text="${studentId}"></span></p>
+    <p>Program: <span th:text="${programName}"></span></p>
+    <p>Duration: <span th:text="${duration}"></span></p>
+    <p>Fee: $<span th:text="${fee}"></span></p>
+
+    <form th:action="@{/processPayment}" method="post">
+        <input type="hidden" name="studentId" th:value="${studentId}">
+        <input type="hidden" name="programCode" th:value="${programCode}">
+        <input type="hidden" name="fee" th:value="${fee}">
+
+        <label>Start Date:</label>
+        <select name="startDate" required>
+            <option th:each="date : ${startDates}" th:value="${date}" th:text="${date}"></option>
+        </select>
+        <br>
+
+        <label>Card Number:</label>
+        <input type="text" name="cardNumber" required><br>
+
+        <label>CVV:</label>
+        <input type="text" name="cvv" required><br>
+
+        <button type="submit">Pay</button>
+    </form>
+
+    <a href="/studentPrograms">Back to Programs</a>
+    </main>
+    
+<div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

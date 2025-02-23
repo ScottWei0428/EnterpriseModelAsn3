@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Program</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<div th:insert="~{header :: headerFragment}"></div>
+<main>
+<hr>
+
+
+    <h1>Edit Program</h1>
+    <form th:action="@{/updateProgram}" method="post">
+        <label>Program Code:</label>
+        <input type="text" name="programCode" th:value="${program.programCode}" readonly><br>
+
+        <label>Program Name:</label>
+        <input type="text" name="programName" th:value="${program.programName}" required><br>
+
+        <label>Duration:</label>
+        <input type="text" name="duration" th:value="${program.duration}" required><br>
+
+        <label>Fee:</label>
+        <input type="text" name="fee" th:value="${program.fee}" required><br>
+        
+        <label>Start Dates:</label>
+		<select name="startDates" required multiple>
+		    <option value="Jan 6" th:selected="${#strings.contains(program.startDates, 'Jan 6')}">Jan 6</option>
+		    <option value="May 6" th:selected="${#strings.contains(program.startDates, 'May 6')}">May 6</option>
+		    <option value="Sep 6" th:selected="${#strings.contains(program.startDates, 'Sep 6')}">Sep 6</option>
+		</select>
+		<p>Hold CTRL (Windows) / Command (Mac) to select multiple dates</p>
+
+        <button type="submit">Update Program</button>
+    </form>
+
+    <br>
+    <a href="/programs">Back to Program List</a>
+    </main>
+    <div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

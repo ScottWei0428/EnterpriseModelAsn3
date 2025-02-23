@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Available Programs</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<div th:insert="~{header :: headerFragment}"></div>
+	
+<main>
+    <h1>Available Programs</h1>
+
+    <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th>Program Code</th>
+                <th>Program Name</th>
+                <th>Duration</th>
+                <th>Fee</th>
+                <th>Start Dates</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${programs}">
+                <td th:text="${p.programCode}"></td>
+                <td th:text="${p.programName}"></td>
+                <td th:text="${p.duration}"></td>
+                <td th:text="${p.fee}"></td>
+                <td th:text="${p.startDates}"></td>
+                <td>
+                    <form th:action="@{/checkout}" method="get">
+                        <input type="hidden" name="programCode" th:value="${p.programCode}">
+                        <button type="submit">Enroll</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+<div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

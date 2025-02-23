@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enrollment Confirmation</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<div th:insert="~{header :: headerFragment}"></div>
+    <main>
+    <h1>Enrollment Successful!</h1>
+
+    <p><strong>Application No:</strong> <span th:text="${enrollment.applicationNo}"></span></p>
+    <p><strong>Student ID:</strong> <span th:text="${enrollment.studentId}"></span></p>
+    <p><strong>Program Code:</strong> <span th:text="${enrollment.programCode}"></span></p>
+    <p><strong>Start Date:</strong> <span th:text="${enrollment.startDate}"></span></p>
+    <p><strong>Amount Paid:</strong> <span th:text="${enrollment.amountPaid}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${enrollment.status}"></span></p>
+
+    <br>
+    <a href="/enrollments">View All Enrollments</a>
+    </main>
+<div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

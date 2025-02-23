@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<div th:insert="~{header :: headerFragment}"></div>
+    <main>
+	<div th:fragment="navbar">
+	    <div>
+	        <a href="/studentPrograms">Programs</a> |
+	        <a href="/enrollments">My Enrollments</a> |
+	        <a href="/profile">My Profile</a> |
+	        <a href="/logout">Logout</a>
+	    </div>
+	    <hr>
+	</div>
+
+    <h1>Edit Profile</h1>
+    <form th:action="@{/updateProfile}" method="post">
+        Password: <input type="password" name="password" th:value="${student.password}" required><br>
+        First Name: <input type="text" name="firstname" th:value="${student.firstname}" required><br>
+        Last Name: <input type="text" name="lastname" th:value="${student.lastname}" required><br>
+        Address: <input type="text" name="address" th:value="${student.address}" required><br>
+        City: <input type="text" name="city" th:value="${student.city}" required><br>
+        Postal Code: <input type="text" name="postalCode" th:value="${student.postalCode}" required><br>
+        <button type="submit">Save</button>
+    </form>
+    <a href="/profile">Back to Profile</a>
+    </main>
+<div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

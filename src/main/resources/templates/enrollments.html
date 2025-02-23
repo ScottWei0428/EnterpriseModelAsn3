@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Enrollments</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+ <div th:insert="~{header :: headerFragment}"></div>
+
+<main>
+    <h1>All Enrollments</h1>
+
+    <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th>Application No</th>
+                <th>Student ID</th>
+                <th>Program Code</th>
+                <th>Start Date</th>
+                <th>Amount Paid</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="e : ${enrollments}">
+                <td th:text="${e.applicationNo}"></td>
+                <td th:text="${e.studentId}"></td>
+                <td th:text="${e.programCode}"></td>
+                <td th:text="${e.startDate}"></td>
+                <td th:text="${e.amountPaid}"></td>
+                <td th:text="${e.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+    </main>
+	
+	    
+<div th:insert="~{footer :: footerFragment}"></div>
+	
+</body>
+</html>

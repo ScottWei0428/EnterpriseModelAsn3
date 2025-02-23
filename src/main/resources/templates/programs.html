@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Programs Management</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+	<div th:insert="~{header :: headerFragment}"></div>
+	<main>
+	
+    <h1>Program List</h1>
+	<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+	    <thead>
+	        <tr style="background-color: #f2f2f2;">
+	            <th>Program Code</th>
+	            <th>Program Name</th>
+	            <th>Duration</th>
+	            <th>Fee</th>
+	            <th>Start Dates</th>
+	            <th>Actions</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr th:each="p : ${programList}">
+	            <td th:text="${p.programCode}"></td>
+	            <td th:text="${p.programName}"></td>
+	            <td th:text="${p.duration}"></td>
+	            <td th:text="${p.fee}"></td>
+	            <td th:text="${p.startDates}"></td>
+	            <td>
+	                <a th:href="@{/deleteProgram(programCode=${p.programCode})}">Delete</a> |
+	                <a th:href="@{/editProgram(programCode=${p.programCode})}">Edit</a>
+	            </td>
+	        </tr>
+	    </tbody>
+	</table>
+
+	<h2>Add New Program</h2>
+	<form th:action="@{/addProgram}" method="post">
+	    <label>Program Code:</label>
+	    <input type="text" name="programCode" required><br>
+	
+	    <label>Program Name:</label>
+	    <input type="text" name="programName" required><br>
+	
+	    <label>Duration:</label>
+	    <input type="text" name="duration" required><br>
+	
+	    <label>Fee:</label>
+	    <input type="text" name="fee" required><br>
+	
+	    <label>Start Dates:</label>
+		<select name="startDates" required multiple>
+		    <option value="Jan 6">Jan 6</option>
+		    <option value="May 6">May 6</option>
+		    <option value="Sep 6">Sep 6</option>
+		</select>
+		<p>Hold CTRL (Windows) / Command (Mac) to select multiple dates</p>
+
+	
+	    <button type="submit">Add Program</button>
+	</form>
+
+
+    <br>
+    <a href="/enrollmentForm">Go to Enrollment</a> |
+    <a href="/">Back to Home</a>
+    </main>
+    <div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<div th:insert="~{header :: headerFragment}"></div>
+    
+<main>
+
+    <h1>Profile</h1>
+    <p>Student ID: <span th:text="${student.studentId}"></span></p>
+    <p>Username: <span th:text="${student.userName}"></span></p>
+    <p>First Name: <span th:text="${student.firstname}"></span></p>
+    <p>Last Name: <span th:text="${student.lastname}"></span></p>
+    <p>Address: <span th:text="${student.address}"></span></p>
+    <p>City: <span th:text="${student.city}"></span></p>
+    <p>Postal Code: <span th:text="${student.postalCode}"></span></p>
+    <a href="/editProfile">Edit Profile</a>
+    </main>
+<div th:insert="~{footer :: footerFragment}"></div>
+</body>
+</html>

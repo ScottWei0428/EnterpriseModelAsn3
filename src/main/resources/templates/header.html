@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="headerFragment" class="header">
+    <div class="header-top">
+        <div class="header-logo-container">
+            <img src="/images/header_logo.png" alt="Header Logo" class="header-logo">
+        </div>
+        <div class="header-title">Student Enrollment System</div>
+    </div>
+
+    <div class="header-bottom" th:if="${session.loggedInStudent}">
+        <nav>
+            <a href="/studentPrograms">Programs</a>
+            <a href="/enrollments">My Enrollments</a>
+            <a href="/profile">My Profile</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+</header>
+</body>
+</html>
